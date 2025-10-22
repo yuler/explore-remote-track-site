@@ -22,7 +22,6 @@ Sentry.init({
   replaysOnErrorSampleRate: 1.0, // 100% 的错误会话将被记录
 })
 
-
 // Track Core Web Vitals
 onCLS(sendToUmami)  // Cumulative Layout Shift
 onINP(sendToUmami)  // Interaction to Next Paint
@@ -30,12 +29,19 @@ onLCP(sendToUmami)  // Largest Contentful Paint
 onFCP(sendToUmami)  // First Contentful Paint
 onTTFB(sendToUmami) // Time to First Byte
 function sendToUmami(metric: { name: string; value: number; rating: string }) {
-  (window as any)?.umami?.track('web-vitals', {
-    metric: metric.name,
-    value: Math.round(metric.value),
+  const roundedValue = Math.round(metric.value) as number;
+  // Send each metric as a separate event for better readability in Umami console
+  (window as any)?.umami?.track(`web-vitals-${metric.name.toLowerCase()}`, {
+    value: roundedValue,
     rating: metric.rating,
+    unit: getMetricUnit(metric.name),
   })
-  console.log(`Web Vital reported to Umami: ${metric.name} = ${Math.round(metric.value)} (${metric.rating})`)
+  console.log(`Web Vital reported to Umami: ${metric.name} = ${roundedValue} (${metric.rating})`)
+}
+
+function getMetricUnit(metricName: string): string {
+  // CLS is a score, others are in milliseconds
+  return metricName === 'CLS' ? 'score' : 'ms'
 }
 
 
