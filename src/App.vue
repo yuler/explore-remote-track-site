@@ -1,30 +1,38 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
+import * as Sentry from '@sentry/vue'
+
+const testSentry = () => {
+  // 测试 Sentry 错误捕获
+  try {
+    throw new Error('这是一个测试错误')
+  } catch (error) {
+    Sentry.captureException(error)
+    console.log('错误已发送到 Sentry')
+  }
+}
 </script>
 
 <template>
   <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+    <h1>Expore Remote Track Site</h1>
+    <button @click="testSentry">测试 Sentry</button>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
 <style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #42b883;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s;
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
+
+button:hover {
+  background-color: #35a372;
 }
 </style>
